@@ -110,10 +110,13 @@ def _launch_demo(args, audio_model, token2wav):
         )
 
     demo.queue().launch(
+        share=False,
         server_port=args.server_port,
         server_name=args.server_name,
+        ssl_certfile="./cert.pem",
+        ssl_keyfile="./key.pem",
+        ssl_verify=False
     )
-
 
 if __name__ == "__main__":
     import os
@@ -124,7 +127,7 @@ if __name__ == "__main__":
     from token2wav import Token2wav
 
     parser = ArgumentParser()
-    parser.add_argument("--model-path", type=str, default='Step-Audio-2-mini', help="Model path.")
+    parser.add_argument("--model-path", type=str, default='/home/promote/.cache/modelscope/hub/models/stepfun-ai/Step-Audio-2-mini', help="Model path.")
     parser.add_argument(
         "--server-port", type=int, default=7862, help="Demo server port."
     )

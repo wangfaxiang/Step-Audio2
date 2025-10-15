@@ -42,9 +42,21 @@ def s2st_test(model, token2wav):
     print(text)
     #print(tokens)
     audio = [x for x in audio if x < 6561] # remove audio padding
-    audio = token2wav(audio, prompt_wav='assets/default_female.wav')
-    with open('output-s2st.wav', 'wb') as f:
-        f.write(audio)
+    
+    # 正常速度播放
+    audio_normal = token2wav(audio, prompt_wav='assets/default_female.wav', speed=1.0)
+    with open('output-s2st-normal.wav', 'wb') as f:
+        f.write(audio_normal)
+    
+    # 加快速度播放 (1.5倍速)
+    audio_fast = token2wav(audio, prompt_wav='assets/default_female.wav', speed=1.5)
+    with open('output-s2st-fast.wav', 'wb') as f:
+        f.write(audio_fast)
+        
+    # 放慢速度播放 (0.7倍速)
+    audio_slow = token2wav(audio, prompt_wav='assets/default_female.wav', speed=0.7)
+    with open('output-s2st-slow.wav', 'wb') as f:
+        f.write(audio_slow)
 
 # multi turn aqta
 def multi_turn_aqta_test(model):
@@ -84,9 +96,22 @@ def multi_turn_aqaa_test(model, token2wav):
         tokens, text, audio = model(history, max_new_tokens=2048, temperature=0.7, do_sample=True)
         print(text)
         audio = [x for x in audio if x < 6561] # remove audio padding
-        audio = token2wav(audio, prompt_wav='assets/default_female.wav')
-        with open(f'output-round-{round_idx}.wav', 'wb') as f:
-            f.write(audio)
+        
+        # 正常速度播放
+        audio_normal = token2wav(audio, prompt_wav='assets/default_female.wav', speed=1.0)
+        with open(f'output-round-{round_idx}-normal.wav', 'wb') as f:
+            f.write(audio_normal)
+            
+        # 加快速度播放 (1.2倍速)
+        audio_fast = token2wav(audio, prompt_wav='assets/default_female.wav', speed=1.2)
+        with open(f'output-round-{round_idx}-fast.wav', 'wb') as f:
+            f.write(audio_fast)
+            
+        # 放慢速度播放 (0.8倍速)
+        audio_slow = token2wav(audio, prompt_wav='assets/default_female.wav', speed=0.8)
+        with open(f'output-round-{round_idx}-slow.wav', 'wb') as f:
+            f.write(audio_slow)
+            
         history.pop(-1)
         history.append(
             {
