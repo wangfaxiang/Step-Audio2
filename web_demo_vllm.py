@@ -9,6 +9,9 @@ from datetime import datetime
 import threading
 import queue
 import pyaudio
+
+CHUNK_SIZE = 25
+
 def save_tmp_audio(audio_bytes, cache_dir):
     with tempfile.NamedTemporaryFile(dir=cache_dir, delete=False, suffix=".wav") as temp_audio:
         temp_audio.write(audio_bytes)
@@ -550,7 +553,8 @@ if __name__ == "__main__":
     def warmup_tts():
         warmup_tokens = [1493, 4299, 4218]  # 示例 token
         try:
-            token2wav.stream(warmup_tokens, prompt_wav=prompt_wav, last_chunk=True)
+            # token2wav.stream(warmup_tokens, prompt_wav=prompt_wav, last_chunk=True)
+            token2wav.stream(tokens[:CHUNK_SIZE + token2wav.flow.pre_lookahead_len], prompt_wav=prompt_wav)
             print("TTS 预热完成")
         except Exception as e:
             print(f"预热失败: {e}")

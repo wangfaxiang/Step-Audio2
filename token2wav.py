@@ -105,7 +105,7 @@ class Token2wav():
         prompt_speech_tokens, prompt_speech_tokens_lens, spk_emb, prompt_mels, prompt_mels_lens = self.cache[prompt_wav]
         self.stream_cache = self.flow.setup_cache(
             torch.cat([prompt_speech_tokens, prompt_speech_tokens[:, :3]], dim=1),
-            prompt_mels, spk_emb, n_timesteps=13)
+            prompt_mels, spk_emb, n_timesteps=10)
 
         # hift cache
         self.hift_cache_dict = dict(
@@ -126,19 +126,13 @@ class Token2wav():
         if self.stream_cache is None:
             raise ValueError("stream_cache is not set")
 
-        # 根据speed参数调整n_timesteps
-        # speed > 1.0 意味着加速，使用较少的步骤
-        # speed < 1.0 意味着减速，使用更多的步骤
-        base_timesteps = 10
-        n_timesteps = max(1, int(base_timesteps / speed))
-
         with torch.amp.autocast("cuda", dtype=torch.float16 if self.float16 else torch.float32):
             chunk_mel, self.stream_cache = self.flow.inference_chunk(
                 token=generated_speech_tokens,
                 spk=spk_emb,
                 cache=self.stream_cache,
                 last_chunk=last_chunk,
-                n_timesteps=n_timesteps,
+                n_timesteps=10,
             )
         if self.stream_cache['estimator_att_cache'].shape[4] > (prompt_mels.shape[1] + 100):
             self.stream_cache['estimator_att_cache'] = torch.cat([
